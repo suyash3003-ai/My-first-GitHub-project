@@ -1,66 +1,81 @@
-def caesar_cipher(text, shift, mode='encrypt'):
-    """
-    Encrypts or decrypts text using a Caesar Cipher.
-    """
+def caesar_encrypt(text, shift):
     result = ""
-    
-    # Reverse the shift for decryption
-    if mode == 'decrypt':
-        shift = -shift
-        
+
     for char in text:
-        if char.isalpha():
-            # Determine ASCII base (65 for 'A', 97 for 'a')
+        if char.isalpha() and char.isascii():
             base = ord('A') if char.isupper() else ord('a')
-            # Shift character and wrap around using modulo 26
-            shifted_char = chr((ord(char) - base + shift) % 26 + base)
-            result += shifted_char
+            shifted = (ord(char) - base + shift) % 26
+            result += chr(base + shifted)
         else:
-            # Keep spaces, numbers, and punctuation unchanged
             result += char
-            
+
     return result
 
-def brute_force_decrypt(ciphertext):
-    """
-    Tries all 25 possible shifts to crack a Caesar Cipher without a known key.
-    """
-    print("\n--- Brute-Force Results ---")
+
+def caesar_decrypt(text, shift):
+    return caesar_encrypt(text, -shift)
+
+
+def brute_force_decrypt(text):
+    print("\n========== BRUTE FORCE RESULTS ==========")
+
     for shift in range(1, 26):
-        decrypted_text = caesar_cipher(ciphertext, shift, mode='decrypt')
-        print(f"Shift {shift:2d}: {decrypted_text}")
-    print("---------------------------\n")
+        decrypted_text = caesar_decrypt(text, shift)
+        print(f"Shift {shift:2}: {decrypted_text}")
+
+    print("=========================================")
+
+
+def get_shift():
+    while True:
+        try:
+            shift = int(input("Enter shift key (integer): "))
+            return shift % 26
+        except ValueError:
+            print("Invalid input! Please enter an integer.")
+
 
 def main():
     while True:
-        print("=== Caesar Cipher Tool ===")
-        print("1. Encrypt text")
-        print("2. Decrypt text (with known shift)")
-        print("3. Brute-force decrypt (unknown shift)")
+        print("\n================================")
+        print("       CAESAR CIPHER TOOL")
+        print("================================")
+        print("1. Encrypt Text")
+        print("2. Decrypt Text")
+        print("3. Brute Force Decryption")
         print("4. Exit")
-        
-        choice = input("Choose an option (1-4): ").strip()
-        
+        print("================================")
+
+        choice = input("Enter your choice (1-4): ").strip()
+
         if choice == '1':
-            text = input("Enter text to encrypt: ")
-            shift = int(input("Enter shift value (e.g., 3): "))
-            print(f"\nEncrypted Text: {caesar_cipher(text, shift, 'encrypt')}\n")
-            
+            text = input("\nEnter text to encrypt: ")
+            shift = get_shift()
+
+            encrypted = caesar_encrypt(text, shift)
+
+            print("\nEncrypted Text:", encrypted)
+
         elif choice == '2':
-            text = input("Enter text to decrypt: ")
-            shift = int(input("Enter shift value (e.g., 3): "))
-            print(f"\nDecrypted Text: {caesar_cipher(text, shift, 'decrypt')}\n")
-            
+            text = input("\nEnter text to decrypt: ")
+            shift = get_shift()
+
+            decrypted = caesar_decrypt(text, shift)
+
+            print("\nDecrypted Text:", decrypted)
+
         elif choice == '3':
-            text = input("Enter text to brute-force: ")
+            text = input("\nEnter encrypted text: ")
+
             brute_force_decrypt(text)
-            
+
         elif choice == '4':
-            print("Exiting program.")
+            print("\nThank you for using Caesar Cipher!")
             break
-            
+
         else:
-            print("\nInvalid choice. Please enter 1, 2, 3, or 4.\n")
+            print("\nInvalid choice! Please select 1, 2, 3, or 4.")
+
 
 if __name__ == "__main__":
     main()
